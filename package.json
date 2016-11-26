@@ -7,7 +7,8 @@
     "prestart": "npm build",
     "start": "node index.js",
     "watch": "webpack --progress --colors --watch --config=webpack.watch.js",
-    "build": "webpack --progress --colors"
+    "build": "webpack --progress --colors",
+    "db": "knex migrate:latest"
   },
   "repository": {
     "type": "git",
@@ -20,16 +21,19 @@
   },
   "homepage": "https://github.com/blainesch/gpg-blog#readme",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "hash.js": "^1.0.3",
     "knex": "^0.12.6",
+    "lodash": "^4.17.2",
+    "moment": "^2.17.0",
+    "pg": "^6.1.0",
     "pug": "^2.0.0-beta6",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-medium-editor": "^1.8.1",
     "react-router": "^3.0.0",
-    "sanitize-html": "^1.13.0",
-    "sqlite3": "^3.1.8"
+    "sanitize-html": "^1.13.0"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",
