@@ -1,5 +1,6 @@
 var webpack = require('webpack')
 var path = require('path')
+var WebpackNotifierPlugin = require('webpack-notifier')
 
 module.exports = {
   devtool: 'source-map',
@@ -19,6 +20,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new WebpackNotifierPlugin({alwaysNotify: true}),
     new webpack.optimize.UglifyJsPlugin({
       compressor: {
         warnings: false,
