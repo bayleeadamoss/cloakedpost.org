@@ -6,7 +6,7 @@
   "scripts": {
     "prestart": "npm build",
     "start": "node index.js",
-    "watch": "webpack --progress --colors --watch",
+    "watch": "webpack --progress --colors --watch --config=webpack.watch.js",
     "build": "webpack --progress --colors"
   },
   "repository": {
