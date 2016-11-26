@@ -17,18 +17,18 @@ db.replies.keys():
 
 ## App Endpoints
 
-GET /#/
-GET /#/post/{id}/{title}
-GET /#/post/new
-POST /#/search/tag // not mvp
+* GET /#/
+* GET /#/post/{id}/{title}
+* GET /#/post/new
+* POST /#/search/tag // not mvp
 
 ## Server Endpoints
 
-GET /
-GET /post/:id
-POST /post
-POST /post/:id/comment
-GET /search/:tag // not mvp
+* GET /
+* GET /post/:id
+* POST /post
+* POST /post/:id/comment
+* GET /search/:tag // not mvp
 
 ## Home
 
