@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { render } from 'react-dom'
-import { Link, Router, Route, IndexRoute, hashHistory } from 'react-router'
+import { Link, Router, Route, IndexRoute, browserHistory } from 'react-router'
 import Editor from 'react-medium-editor'
 import moment from 'moment'
 
@@ -64,7 +64,12 @@ class Post extends Component {
 
   componentWillMount () {
     const { id } = this.context.router.params
-    fetch(`/post/${id}`).then((res) => {
+    fetch(`/post/${id}`, {
+      method: 'GET',
+      headers: new Headers({
+        'Accept': 'application/json',
+      }),
+    }).then((res) => {
       return res.json()
     }).then(({ post }) => {
       this.setState({
@@ -146,6 +151,9 @@ class CreatePost extends Component {
     fetch('/post', {
       method: 'POST',
       body: JSON.stringify(this.state),
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
     }).then((response) => {
       return response.json()
     }).then(({id}) => {
@@ -180,7 +188,7 @@ class CreatePost extends Component {
 }
 
 const routes = (
-  <Router history={hashHistory}>
+  <Router history={browserHistory}>
     <Route path='/' component={App}>
       <IndexRoute component={Home} />
       <Route path='/post/new' component={CreatePost}/>

@@ -45,13 +45,13 @@ app.use(express.static('public'))
 app.set('view engine', 'pug')
 
 app.get('/', function (req, res) {
-  res.render('index', {
-    pageTitle: 'Meow',
-    canonical: 'wattttt',
-  })
+  res.render('index')
 })
 
 app.get('/post/:id/:title*?', (req, res) => {
+  if (req.accepts('html')) {
+    return res.render('index')
+  }
   const post = knex('posts')
     .select()
     .where({
