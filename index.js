@@ -70,8 +70,8 @@ app.get('/post', maybeHtml, (req, res) => {
 })
 
 app.get('/istor', (req, res) => {
-  const { remoteAddress } = req.connection
-  TorTest.isTor(remoteAddress, (err, isTor) => {
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+  TorTest.isTor(ip, (err, isTor) => {
     res.json({
       isTor,
     })
