@@ -50,7 +50,11 @@ const maybeHtml = (req, res, next) => {
   next()
 }
 
-app.get('/post', maybeHtml, function (req, res) {
+app.get('/', maybeHtml, (req, res) => {
+  return res.render('index')
+})
+
+app.get('/post', maybeHtml, (req, res) => {
   knex('posts')
     .select()
     .orderBy('createdAt', 'DESC')
@@ -65,8 +69,9 @@ app.get('/post', maybeHtml, function (req, res) {
     })
 })
 
-app.get('/istor', function (req, res) {
-  TorTest.isTor(req.connection.remoteAddress, (err, isTor) => {
+app.get('/istor', (req, res) => {
+  const { remoteAddress } = req.connection
+  TorTest.isTor(remoteAddress, (err, isTor) => {
     res.json({
       isTor,
     })
