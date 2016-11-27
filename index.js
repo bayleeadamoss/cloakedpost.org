@@ -45,7 +45,7 @@ app.use(express.static('public'))
 app.set('view engine', 'pug')
 
 app.use(function (req, res, next) {
-  if (req.accepts('html')) {
+  if (req.accepts('html') && req.method.match(/get/i)) {
     return res.render('index')
   }
   next()
