@@ -69,14 +69,23 @@ app.get('/post', maybeHtml, (req, res) => {
     })
 })
 
+const thirtyMinutes = 30 * 60000
+let lastChecked = 0
+
 app.get('/istor', (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-  TorTest.isTor(ip, (err, isTor) => {
+  let force = false
+  if (lastChecked + thirtyMinutes < Date.now()) {
+    lastChecked = Date.now()
+    force = true
+  }
+  TorTest.isTor(ip, force, (err, isTor) => {
     res.json({
       isTor,
     })
   })
 })
+
 
 app.get('/post/:id/:title*?', maybeHtml, (req, res) => {
   knex('posts')
