@@ -44,15 +44,30 @@ function generateId (length = 15) {
 app.use(express.static('public'))
 app.set('view engine', 'pug')
 
-app.get('/', function (req, res) {
-  res.render('index')
-})
-
-app.get('/post/:id/:title*?', (req, res) => {
+app.use(function (req, res, next) {
   if (req.accepts('html')) {
     return res.render('index')
   }
-  const post = knex('posts')
+  next()
+})
+
+app.get('/post', function (req, res) {
+  knex('posts')
+    .select()
+    .orderBy('createdAt', 'DESC')
+    .orderByRaw('RANDOM()')
+    .limit(10)
+    .then((posts) => {
+      res.json({
+        posts,
+      })
+    }).catch((err) => {
+      res.sendStatus(500)
+    })
+})
+
+app.get('/post/:id/:title*?', (req, res) => {
+  knex('posts')
     .select()
     .where({
       id: validateId(req.params.id)
@@ -86,7 +101,6 @@ app.post('/post', jsonParser, (req, res) => {
       id,
     })
   }).catch((err) => {
-    console.log(err)
     res.sendStatus(500)
   })
 })

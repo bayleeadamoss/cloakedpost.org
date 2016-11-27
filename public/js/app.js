@@ -8,15 +8,32 @@ require('../css/style.scss')
 require('medium-editor/dist/css/medium-editor.css')
 require('medium-editor/dist/css/themes/default.css')
 
+class StaySafe extends Component {
+  render () {
+    return (
+      <article>
+        <h2>Stay Safe</h2>
+        <p>Use the <a target='_blank' href='https://www.torproject.org/projects/torbrowser.html.en'>Tor Browser</a> to keep your identity anonymous online.</p>
+        <h2>Trip Codes</h2>
+        <p>Trip codes can help you maintain continuity over posts and comments, without registering. To use trip codes simply, place a hash sign (<i>"#"</i>) followed by a word or short phrase after your name.</p>
+        <p>For example if you put your name as <i>'lolcat#password'</i> will turn into the name <i>'lolcat'</i> with the hash <i>'b109f3b'</i> attached to it. If both the name and hash are the same, you can be reasonably sure you are talking to the same user.</p>
+        <h2>Privacy</h2>
+        <p>This site does NOT contain any tracking software, or use cookies. It does record the date of the post, but it does not record the times of posts or any other information about the posts other than what you type in.</p>
+        <p>Even with the best software, avoid giving away hints about your identify like locations or unique names of people you might talk about.</p>
+      </article>
+    )
+  }
+}
+
 class Header extends Component {
-  render() {
+  render () {
     return (
       <header>
         <div className='wrapper'>
           <h1><Link to='/'>Light Medium</Link></h1>
           <ul>
             <li className='new'><Link to='/post/new' activeClassName='active'>Create</Link></li>
-            <li className='search'><Link to='/search' activeClassName='active'>Search</Link></li> <li className='github'><a target='_blank' href='https://github.com'>GitHub</a></li>
+            <li className='github'><a target='_blank' href='https://github.com'>GitHub</a></li>
           </ul>
         </div>
       </header>
@@ -25,7 +42,7 @@ class Header extends Component {
 }
 
 class App extends Component {
-  render() {
+  render () {
     return (
       <div>
         <Header />
@@ -39,11 +56,94 @@ class App extends Component {
   }
 }
 
-class Home extends Component {
-  render() {
+class Excerpt extends Component {
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
+
+  static propTypes = {
+    id: React.PropTypes.string.isRequired,
+    name: React.PropTypes.string.isRequired,
+    passkey: React.PropTypes.string.isRequired,
+    title: React.PropTypes.string.isRequired,
+    content: React.PropTypes.string.isRequired,
+    createdAt: React.PropTypes.string.isRequired,
+  }
+
+  handleClick = () => {
+    this.context.router.push({
+      pathname: `/post/${this.props.id}`,
+    })
+  }
+
+  render () {
     return (
-      <div>
-        Home
+      <article onClick={this.handleClick} className='excerpt'>
+        <h1>{this.props.title}</h1>
+        <p className='credentials'>
+          <span className='name'>{this.props.name}</span>
+          <span className='key' title={this.props.passkey}>{this.props.passkey.substr(0,7)}</span>
+          <span className='date'>{moment(this.props.createdAt).format('LL')}</span>
+        </p>
+        <div dangerouslySetInnerHTML={{__html: this.props.content}} />
+      </article>
+    )
+  }
+}
+
+class Home extends Component {
+  constructor (props, context) {
+    super(props, context)
+    this.state = {
+      loading: true,
+    }
+  }
+
+  componentWillMount () {
+    fetch('/post', {
+      headers: new Headers({
+        'Accept': 'application/json',
+      }),
+    }).then((res) => {
+      return res.json()
+    }).then(({ posts }) => {
+      this.setState({
+        loading: false,
+        posts,
+      })
+    }).catch(() => {
+      this.setState({
+        loading: false,
+        error: true,
+      })
+    })
+  }
+
+  render() {
+    if (this.state.loading) {
+      return <div className='loader'>Loading...</div>
+    }
+
+    return (
+      <div className='home'>
+        <div id='stay-safe'>
+          <StaySafe />
+        </div>
+        <ul id='articles'>
+          { this.state.posts.map((post) => {
+            return (
+              <li>
+                <Excerpt
+                  id={post.id}
+                  name={post.name}
+                  passkey={post.passkey}
+                  title={post.title}
+                  content={post.content}
+                  createdAt={post.createdAt} />
+              </li>
+            )
+          })}
+        </ul>
       </div>
     )
   }
@@ -57,6 +157,7 @@ class Post extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      loading: true,
       error: false,
       post: null,
     }
@@ -73,16 +174,21 @@ class Post extends Component {
       return res.json()
     }).then(({ post }) => {
       this.setState({
+        loading: false,
         post,
       })
     }).catch(() => {
       this.setState({
+        loading: false,
         error: true,
       })
     })
   }
 
   render() {
+    if (this.state.loading) {
+      return <div className='loader'>Loading...</div>
+    }
     const { post } = this.state
     return (
       <div>
