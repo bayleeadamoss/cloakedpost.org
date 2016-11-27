@@ -4,7 +4,7 @@
   "description": "Anonymous blogging platform.",
   "main": "index.js",
   "scripts": {
-    "prestart": "npm build",
+    "prestart": "npm run build",
     "start": "node index.js",
     "watch": "webpack --progress --colors --watch --config=webpack.watch.js",
     "build": "webpack --progress --colors",

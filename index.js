@@ -2,7 +2,8 @@ const express = require('express')
 const app = express()
 const hash = require('hash.js')
 const sanitizeHtml = require('sanitize-html')
-const knex = require('knex')(require('./knexfile').development)
+const ENV = process.env.NODE_ENV || 'development'
+const knex = require('knex')(require('./knexfile')[ENV])
 const _ = require('lodash')
 const bodyParser = require('body-parser')
 const jsonParser = bodyParser.json({type: '*/*'})
@@ -62,6 +63,7 @@ app.get('/post', function (req, res) {
         posts,
       })
     }).catch((err) => {
+      console.log('err', err)
       res.sendStatus(500)
     })
 })
@@ -81,6 +83,7 @@ app.get('/post/:id/:title*?', (req, res) => {
         post,
       })
     }).catch((err) => {
+      console.log('err', err)
       res.sendStatus(500)
     })
 })
@@ -121,5 +124,5 @@ app.post('/post/:id/comment', jsonParser, (req, res) => {
 })
 
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
+  console.log('Example app listening on port 3000!', ENV)
 })
