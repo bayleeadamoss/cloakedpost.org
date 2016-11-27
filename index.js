@@ -8,6 +8,7 @@ const _ = require('lodash')
 const bodyParser = require('body-parser')
 const jsonParser = bodyParser.json({type: '*/*'})
 const CLOAK_SALT = process.env.CLOAK_SALT || 'EtC9szrmx4HDAZg35aW2x4RtwqW3eL7H03I'
+const TorTest = require('tor-test')
 
 function validateId (id) {
   if (id.match(/^[a-z0-9]+$/)) {
@@ -42,14 +43,14 @@ function generateId (length = 15) {
 app.use(express.static('public'))
 app.set('view engine', 'pug')
 
-app.use(function (req, res, next) {
+const maybeHtml = (req, res, next) => {
   if (req.accepts('html') && req.method.match(/get/i)) {
     return res.render('index')
   }
   next()
-})
+}
 
-app.get('/post', function (req, res) {
+app.get('/post', maybeHtml, function (req, res) {
   knex('posts')
     .select()
     .orderBy('createdAt', 'DESC')
@@ -64,7 +65,15 @@ app.get('/post', function (req, res) {
     })
 })
 
-app.get('/post/:id/:title*?', (req, res) => {
+app.get('/istor', function (req, res) {
+  TorTest.isTor(req.connection.remoteAddress, (err, isTor) => {
+    res.json({
+      isTor,
+    })
+  })
+})
+
+app.get('/post/:id/:title*?', maybeHtml, (req, res) => {
   knex('posts')
     .select()
     .where({
