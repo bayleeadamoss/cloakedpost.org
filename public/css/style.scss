@@ -10,6 +10,7 @@ body {
   margin: 0;
   padding:  0;
 }
+
 button {
   font-weight: 600;
   font-style: normal;
@@ -198,5 +199,16 @@ h1, h2 {
       top: 0;
       right: -23px;
     }
+  }
+}
+
+.warning {
+  color: rgba(0, 0, 0, 0.8);
+  border: 1px solid $purple;
+  background-color: lighten($purple, 20%);
+  padding: 10px;
+  margin: 10px;
+  p {
+    margin: 0;
   }
 }

@@ -299,7 +299,26 @@ class CreatePost extends Component {
       name: '',
       content: '',
       agreed: false,
+      isTor: null,
     }
+  }
+
+  componentWillMount () {
+    fetch('/istor', {
+      headers: new Headers({
+        'Accept': 'application/json',
+      }),
+    }).then((res) => {
+      return res.json()
+    }).then(({ isTor }) => {
+      this.setState({
+        isTor,
+      })
+    }).catch(() => {
+      this.setState({
+        isTor: false,
+      })
+    })
   }
 
   handleTitleChange = (title) => {
@@ -346,6 +365,11 @@ class CreatePost extends Component {
   render() {
     return (
       <div>
+        { (this.state.isTor === false) && (
+          <div className='warning'>
+            <p>Download the <a href='https://www.torproject.org/projects/torbrowser.html.en'>Tor Browser</a> to post anonymously.</p>
+          </div>
+        ) }
         <Meta title='Create Post' path='/post/new' />
         <Editor
           text={this.state.title}
