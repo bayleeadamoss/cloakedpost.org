@@ -38,7 +38,7 @@ class StaySafe extends Component {
         <h2>Privacy</h2>
         <p>This site does NOT contain any tracking software, or use cookies. It does record the date of the post, but it does not record the times of posts or any other information about the posts other than what you type in.</p>
         <p>Even with the best software, avoid giving away hints about your identify like locations or unique names of people you might talk about.</p>
-        <p>The software running this blog is open source on <a target='_blank' href='https://github.com/tinytacoteam/cloakedpost.org'>GitHub</a></p>
+        <p>The software running this blog is open source on <a target='_blank' href='https://github.com/tinytacoteam/cloakedpost.org'>GitHub</a>.</p>
       </article>
     )
   }
