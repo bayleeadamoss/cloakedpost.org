@@ -133,7 +133,7 @@ class Home extends Component {
         <ul id='articles'>
           { this.state.posts.map((post) => {
             return (
-              <li>
+              <li key={post.id}>
                 <Excerpt
                   id={post.id}
                   name={post.name}
