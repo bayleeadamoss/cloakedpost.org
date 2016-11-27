@@ -3,10 +3,28 @@ import { render } from 'react-dom'
 import { Link, Router, Route, IndexRoute, browserHistory } from 'react-router'
 import Editor from 'react-medium-editor'
 import moment from 'moment'
+import DocumentMeta from 'react-document-meta'
+import slug from 'slug'
 
 require('../css/style.scss')
 require('medium-editor/dist/css/medium-editor.css')
 require('medium-editor/dist/css/themes/default.css')
+
+class Meta extends Component {
+  static propTypes = {
+    title: React.PropTypes.string,
+    path: React.PropTypes.string,
+  }
+
+  render () {
+    const title = (this.props.title || 'Home') + ' | Cloaked Post'
+    const canonical = 'https://cloakedpost.org' + (this.props.path || '/')
+    return <DocumentMeta
+      title={title}
+      canonical={canonical}
+      description='A truely anonymous blogging platform.' />
+  }
+}
 
 class StaySafe extends Component {
   render () {
@@ -46,6 +64,7 @@ class App extends Component {
   render () {
     return (
       <div>
+        <Meta />
         <Header />
         <div className='content'>
           <div className='wrapper'>
@@ -73,7 +92,7 @@ class Excerpt extends Component {
 
   handleClick = () => {
     this.context.router.push({
-      pathname: `/post/${this.props.id}`,
+      pathname: `/post/${this.props.id}/${slug(this.props.title)}`,
     })
   }
 
@@ -178,7 +197,7 @@ class Post extends Component {
         loading: false,
         post,
       })
-    }).catch(() => {
+    }).catch((err) => {
       this.setState({
         loading: false,
         error: true,
@@ -190,23 +209,29 @@ class Post extends Component {
     if (this.state.loading) {
       return <div className='loader'>Loading...</div>
     }
+    if (this.state.error) {
+      return <h1>Post not found</h1>
+    }
     const { post } = this.state
+    const urlSlug = this.context.router.params.title
+    const actualSlug = slug(post.title)
+    if (urlSlug !== actualSlug) {
+      this.context.router.replace({
+        pathname: `/post/${post.id}/${actualSlug}`,
+      })
+    }
     return (
       <div>
-        { post && (
-          <article>
-            <h1>{post.title}</h1>
-            <p className='credentials'>
-              <span className='name'>{post.name}</span>
-              <span className='key' title={post.passkey}>{post.passkey.substr(0,7)}</span>
-              <span className='date'>{moment(post.createdAt).format('LL')}</span>
-            </p>
-            <div dangerouslySetInnerHTML={{__html: post.content}} />
-          </article>
-        )}
-        { this.state.error && (
-          <h1>Post not found</h1>
-        )}
+        <article>
+          <Meta title={post.title} path={`/post/${post.id}/${actualSlug}`} />
+          <h1>{post.title}</h1>
+          <p className='credentials'>
+            <span className='name'>{post.name}</span>
+            <span className='key' title={post.passkey}>{post.passkey.substr(0,7)}</span>
+            <span className='date'>{moment(post.createdAt).format('LL')}</span>
+          </p>
+          <div dangerouslySetInnerHTML={{__html: post.content}} />
+        </article>
       </div>
     )
   }
@@ -264,8 +289,9 @@ class CreatePost extends Component {
     }).then((response) => {
       return response.json()
     }).then(({id}) => {
+      const urlSlug = slug(this.state.title)
       this.context.router.push({
-        pathname: `/post/${id}`,
+        pathname: `/post/${id}/${urlSlug}`,
       })
     })
   }
@@ -273,6 +299,7 @@ class CreatePost extends Component {
   render() {
     return (
       <div>
+        <Meta title='Create Post' path='/post/new' />
         <Editor
           text={this.state.title}
           onChange={this.handleTitleChange}
@@ -300,6 +327,7 @@ const routes = (
       <IndexRoute component={Home} />
       <Route path='/post/new' component={CreatePost}/>
       <Route path='/post/:id' component={Post}/>
+      <Route path='/post/:id/:title' component={Post}/>
       <Route path='/search' component={Search}/>
       <Route path='/search/:search' component={Search}/>
     </Route>
