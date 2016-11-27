@@ -20,11 +20,11 @@ function cleanTitle (title) {
   return sanitizeHtml(title, { allowedTags: [] })
 }
 
-function cleanContent (title) {
-  return sanitizeHtml(title)
+function cleanContent (content) {
+  return sanitizeHtml(content)
 }
 
-function hashPasskey (passkey) {
+function hashPasskey (passkey = '') {
   return hash.sha512().update(CLOAK_SALT + passkey).digest('hex')
 }
 
