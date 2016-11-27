@@ -360,8 +360,7 @@ class CreatePost extends Component {
         <Editor
           text={this.state.content}
           onChange={this.handleContentChange}
-          options={{placeholder: { text: 'Your story...' }}}
-          tag='p'/>
+          options={{placeholder: { text: 'Your story...' }}} />
         <LicenseAgreement onChange={this.handleAgreementChange} />
         { this.state.agreed && (
           <button onClick={this.handlePublish}>Publish</button>
