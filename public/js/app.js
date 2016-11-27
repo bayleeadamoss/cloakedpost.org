@@ -22,7 +22,7 @@ class Meta extends Component {
     return <DocumentMeta
       title={title}
       canonical={canonical}
-      description='A truely anonymous blogging platform.' />
+      description='A truly anonymous blogging platform.' />
   }
 }
 

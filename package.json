@@ -1,7 +1,7 @@
 {
   "name": "blog",
   "version": "1.0.0",
-  "description": "Anonymous blogging platform.",
+  "description": "A truly anonymous blogging platform.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
