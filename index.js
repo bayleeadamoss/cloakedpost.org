@@ -7,6 +7,7 @@ const knex = require('knex')(require('./knexfile')[ENV])
 const _ = require('lodash')
 const bodyParser = require('body-parser')
 const jsonParser = bodyParser.json({type: '*/*'})
+const CLOAK_SALT = process.env.CLOAK_SALT || 'EtC9szrmx4HDAZg35aW2x4RtwqW3eL7H03I'
 
 function validateId (id) {
   if (id.match(/^[a-z0-9]+$/)) {
@@ -24,11 +25,7 @@ function cleanContent (title) {
 }
 
 function hashPasskey (passkey) {
-  return hash.sha512().update(passkey).digest('hex')
-}
-
-function today () {
-  return new Date(new Date().toDateString())
+  return hash.sha512().update(CLOAK_SALT + passkey).digest('hex')
 }
 
 function generateId (length = 15) {
