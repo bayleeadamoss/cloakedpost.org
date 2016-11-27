@@ -60,8 +60,7 @@ app.get('/post', function (req, res) {
         posts,
       })
     }).catch((err) => {
-      console.log('err', err)
-      res.sendStatus(500)
+      res.status(500).send(err.message)
     })
 })
 
@@ -80,19 +79,31 @@ app.get('/post/:id/:title*?', (req, res) => {
         post,
       })
     }).catch((err) => {
-      console.log('err', err)
-      res.sendStatus(500)
+      res.status(500).send(err.message)
     })
 })
 
 app.post('/post', jsonParser, (req, res) => {
   const [name, passkey] = (req.body.name || 'anonymous').split('#')
+  // Agreement
+  if (!req.body.agreed) {
+    return res.status(401).send('Agree to the terms.')
+  }
+
+  // Minimum content
+  const title = cleanTitle(req.body.title)
+  const content = cleanContent(req.body.content)
+  if (title.length < 1) return res.status(406).send('Title is required.')
+  console.log('content', content.length, content)
+  if (content.length < 1) return res.status(406).send('Content is required.')
+
+  // Insert
   knex('posts').insert({
     id: generateId(15),
     name: cleanTitle(name),
     passkey: hashPasskey(passkey),
-    title: cleanTitle(req.body.title),
-    content: cleanContent(req.body.content),
+    title: title,
+    content: content,
     createdAt: new Date(),
   })
   .returning('id')
@@ -101,7 +112,7 @@ app.post('/post', jsonParser, (req, res) => {
       id,
     })
   }).catch((err) => {
-    res.sendStatus(500)
+    res.status(500).send(err.message)
   })
 })
 
@@ -115,8 +126,8 @@ app.post('/post/:id/comment', jsonParser, (req, res) => {
     createdAt: new Date(),
   }).then(() => {
     res.sendStatus(201)
-  }).catch(() => {
-    res.sendStatus(500)
+  }).catch((err) => {
+    res.status(500).send(err.message)
   })
 })
 

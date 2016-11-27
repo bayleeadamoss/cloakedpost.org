@@ -171,3 +171,32 @@ h1, h2 {
     }
   }
 }
+
+.license {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.4);
+  line-height: 20px;
+  display: block;
+  margin: 5px 0;
+  a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+  .icon {
+    position: relative;
+    margin-right: 25px;
+    display: inline-block;
+    line-height: 20px;
+    &:after {
+      position: absolute;
+      content: "\00a0";
+      display: block;
+      background-image: url('/img/cc0-letter.png');
+      background-size: 20px 20px;
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      top: 0;
+      right: -23px;
+    }
+  }
+}

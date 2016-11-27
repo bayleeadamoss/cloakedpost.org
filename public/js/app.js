@@ -26,6 +26,45 @@ class Meta extends Component {
   }
 }
 
+class LicenseAgreement extends Component {
+  static propTypes = {
+    onChange: React.PropTypes.func.isRequired,
+  }
+
+  onChange = (event) => {
+    this.props.onChange(event.target.checked)
+  }
+
+  render () {
+    return (
+      <div className='license'>
+        <input type='checkbox' onChange={this.onChange} id='agreement' />
+        <label htmlFor='agreement'>
+          You agree that your content is hereby licensed under the&nbsp;
+          <a href='http://creativecommons.org/publicdomain/zero/1.0/' target='_blank' className='icon'>CC0 License</a>.
+        </label>
+      </div>
+    )
+  }
+}
+
+class LicenseSmall extends Component {
+  render () {
+    return (
+      <p className='license'>
+        <a
+          target='_blank'
+          rel='license'
+          title='To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.'
+          href='http://creativecommons.org/publicdomain/zero/1.0/'>
+          No rights reserved&nbsp;
+        </a>
+        <span className='icon'> by the author.</span>
+      </p>
+    )
+  }
+}
+
 class StaySafe extends Component {
   render () {
     return (
@@ -231,6 +270,7 @@ class Post extends Component {
             <span className='date'>{moment(post.createdAt).format('LL')}</span>
           </p>
           <div dangerouslySetInnerHTML={{__html: post.content}} />
+          <LicenseSmall />
         </article>
       </div>
     )
@@ -257,7 +297,8 @@ class CreatePost extends Component {
     this.state = {
       title: '',
       name: '',
-      story: '',
+      content: '',
+      agreed: false,
     }
   }
 
@@ -296,6 +337,12 @@ class CreatePost extends Component {
     })
   }
 
+  handleAgreementChange = (agreed) => {
+    this.setState({
+      agreed,
+    })
+  }
+
   render() {
     return (
       <div>
@@ -315,7 +362,10 @@ class CreatePost extends Component {
           onChange={this.handleContentChange}
           options={{placeholder: { text: 'Your story...' }}}
           tag='p'/>
-        <button onClick={this.handlePublish}>Publish</button>
+        <LicenseAgreement onChange={this.handleAgreementChange} />
+        { this.state.agreed && (
+          <button onClick={this.handlePublish}>Publish</button>
+        ) }
       </div>
     )
   }
