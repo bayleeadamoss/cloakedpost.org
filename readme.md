@@ -1,5 +1,4 @@
 ## Cloaked Post
-
 ## Installing
 
 Dependencies:
@@ -30,4 +29,10 @@ process:
 
 ~~~
 npm start
+~~~
+
+## Post as cURL Example
+
+~~~
+curl -i 'http://localhost:3000/post' -H 'content-type: application/json' --data-binary '{"title":"Your post title","name":"username#password","agreed":true,"content":"This is your post content"}' --compressed
 ~~~
