@@ -9,7 +9,8 @@ const bodyParser = require('body-parser')
 const jsonParser = bodyParser.json({type: '*/*'})
 const CLOAK_SALT = process.env.CLOAK_SALT || 'EtC9szrmx4HDAZg35aW2x4RtwqW3eL7H03I'
 const TorTest = require('tor-test')
-const os = require("os")
+const os = require('os')
+const { exec } = require('child_process')
 
 function validateId (id) {
   if (id.match(/^[a-z0-9]+$/)) {
