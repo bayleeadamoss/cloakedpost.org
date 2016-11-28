@@ -9,6 +9,7 @@ const bodyParser = require('body-parser')
 const jsonParser = bodyParser.json({type: '*/*'})
 const CLOAK_SALT = process.env.CLOAK_SALT || 'EtC9szrmx4HDAZg35aW2x4RtwqW3eL7H03I'
 const TorTest = require('tor-test')
+const os = require("os")
 
 function validateId (id) {
   if (id.match(/^[a-z0-9]+$/)) {
@@ -52,6 +53,18 @@ const maybeHtml = (req, res, next) => {
 
 app.get('/', maybeHtml, (req, res) => {
   return res.render('index')
+})
+
+app.get('/status', (req, res) => {
+  exec('git rev-parse HEAD', (error, revision, stderr) => {
+    if (error) revision = 'unknown'
+    res.json({
+      env: ENV,
+      hostname: os.hostname(),
+      root: process.cwd(),
+      revision: revision.trim()
+    })
+  })
 })
 
 app.get('/post', maybeHtml, (req, res) => {
