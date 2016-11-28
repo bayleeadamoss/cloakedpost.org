@@ -372,19 +372,37 @@ class CreatePost extends Component {
         ) }
         <Meta title='Create Post' path='/post/new' />
         <Editor
+          tag='h1'
           text={this.state.title}
           onChange={this.handleTitleChange}
-          options={{placeholder: { text: 'Title' }, disableReturn: true, toolbar: {buttons: []}}}
-          tag='h1'/>
+          options={{
+            placeholder: { text: 'Title' },
+            disableReturn: true,
+            toolbar: { buttons: [] },
+            imageDragging: false,
+          }} />
         <Editor
+          tag='p'
           text={this.state.name}
           onChange={this.handleNameChange}
-          options={{placeholder: { text: 'Your name' }, disableReturn: true, toolbar: {buttons: []}}}
-          tag='p'/>
+          options={{
+            placeholder: { text: 'Your name' },
+            disableReturn: true,
+            toolbar: { buttons: [] },
+            imageDragging: false,
+          }} />
         <Editor
           text={this.state.content}
           onChange={this.handleContentChange}
-          options={{placeholder: { text: 'Your story...' }}} />
+          options={{
+            paste: {
+              forcePlainText: false,
+              cleanPastedHTML: false,
+            },
+            autoLink: true,
+            imageDragging: false,
+            placeholder: { text: 'Your story...' }
+          }} />
         <LicenseAgreement onChange={this.handleAgreementChange} />
         { this.state.agreed && (
           <button onClick={this.handlePublish}>Publish</button>

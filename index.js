@@ -24,7 +24,14 @@ function cleanTitle (title) {
 }
 
 function cleanContent (content) {
-  return sanitizeHtml(content)
+  return sanitizeHtml(content, {
+    allowedTags: ['h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol',
+      'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div',
+      'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'span'],
+    allowedAttributes: {
+      '*': ['style', 'href', 'align', 'alt', 'center', 'bgcolor', 'name', 'target'],
+    }
+  })
 }
 
 function hashPasskey (passkey = '') {
@@ -131,7 +138,6 @@ app.post('/post', jsonParser, (req, res) => {
   const title = cleanTitle(req.body.title)
   const content = cleanContent(req.body.content)
   if (title.length < 1) return res.status(406).send('Title is required.')
-  console.log('content', content.length, content)
   if (content.length < 1) return res.status(406).send('Content is required.')
 
   // Insert
