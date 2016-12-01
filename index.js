@@ -121,6 +121,22 @@ app.get('/post/:id/:title*?', maybeHtml, (req, res) => {
       }
       res.json({
         post,
+        replies: [
+          {
+            id: 'meow',
+            name: 'blaine',
+            passkey: '234234908239jsjd2j4029j',
+            comment: 'first!',
+            createdAt: new Date(),
+          },
+          {
+            id: 'meow',
+            name: 'blaine',
+            passkey: '234234908239jsjd2j4029j',
+            comment: 'first!',
+            createdAt: new Date(),
+          }
+        ],
       })
     }).catch((err) => {
       res.status(500).send(err.message)
@@ -160,15 +176,25 @@ app.post('/post', jsonParser, (req, res) => {
 })
 
 app.post('/post/:id/comment', jsonParser, (req, res) => {
+  const [name, passkey] = (req.body.name || 'anonymous').split('#')
+
+  // Minimum content
+  const comment = cleanContent(req.body.comment)
+  if (comment.length < 1) return res.status(406).send('Comment is required.')
+
+  // Insert
   knex('replies').insert({
     id: generateId(20),
-    post_id: validateId(req.params.id),
-    name: cleanTitle(req.params.name),
-    passkey: hashPasskey(req.params.passkey),
-    content: cleanTitle(req.params.content),
+    name: cleanTitle(name),
+    passkey: hashPasskey(passkey),
+    comment: comment,
     createdAt: new Date(),
-  }).then(() => {
-    res.sendStatus(201)
+  })
+  .returning('id')
+  .then(([id]) => {
+    res.status(201).json({
+      id,
+    })
   }).catch((err) => {
     res.status(500).send(err.message)
   })

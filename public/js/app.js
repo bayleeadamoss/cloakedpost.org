@@ -231,10 +231,11 @@ class Post extends Component {
       }),
     }).then((res) => {
       return res.json()
-    }).then(({ post }) => {
+    }).then(({ post, replies }) => {
       this.setState({
         loading: false,
         post,
+        replies,
       })
     }).catch((err) => {
       this.setState({
@@ -251,7 +252,7 @@ class Post extends Component {
     if (this.state.error) {
       return <h1>Post not found</h1>
     }
-    const { post } = this.state
+    const { post, replies } = this.state
     const urlSlug = this.context.router.params.title
     const actualSlug = slug(post.title)
     if (urlSlug !== actualSlug) {
@@ -272,10 +273,27 @@ class Post extends Component {
           <div dangerouslySetInnerHTML={{__html: post.content}} />
           <LicenseSmall />
         </article>
+        <section className='replies'>
+          <h3>Responses</h3>
+          <ul>
+            { replies.map((reply, i) => <Reply key={i} data={reply} />) }
+          </ul>
+        </section>
       </div>
     )
   }
 }
+
+const Reply = ({data: { comment, name, passkey, createdAt }}) => (
+  <li>
+    <p className='credentials'>
+      <span className='name'>{name}</span>
+      <span className='key' title={passkey}>{passkey.substr(0,7)}</span>
+      <span className='date'>{moment(createdAt).format('LL')}</span>
+    </p>
+    <pre>{ comment }</pre>
+  </li>
+)
 
 class Search extends Component {
   render() {
