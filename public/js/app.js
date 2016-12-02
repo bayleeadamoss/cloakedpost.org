@@ -4,7 +4,7 @@ import { Link, Router, Route, IndexRoute, browserHistory } from 'react-router'
 import Editor from 'react-medium-editor'
 import moment from 'moment'
 import DocumentMeta from 'react-document-meta'
-import slug from 'slug'
+import slugify from 'slugify'
 
 require('../css/style.scss')
 require('medium-editor/dist/css/medium-editor.css')
@@ -131,7 +131,7 @@ class Excerpt extends Component {
 
   handleClick = () => {
     this.context.router.push({
-      pathname: `/post/${this.props.id}/${slug(this.props.title)}`,
+      pathname: `/post/${this.props.id}/${slugify(this.props.title)}`,
     })
   }
 
@@ -253,7 +253,7 @@ class Post extends Component {
     }
     const { post } = this.state
     const urlSlug = this.context.router.params.title
-    const actualSlug = slug(post.title)
+    const actualSlug = slugify(post.title)
     if (urlSlug !== actualSlug) {
       this.context.router.replace({
         pathname: `/post/${post.id}/${actualSlug}`,
@@ -349,7 +349,7 @@ class CreatePost extends Component {
     }).then((response) => {
       return response.json()
     }).then(({id}) => {
-      const urlSlug = slug(this.state.title)
+      const urlSlug = slugify(this.state.title)
       this.context.router.push({
         pathname: `/post/${id}/${urlSlug}`,
       })
