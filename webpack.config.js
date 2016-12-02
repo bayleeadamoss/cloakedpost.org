@@ -4,7 +4,7 @@ var path = require('path')
 module.exports = {
   devtool: 'source-map',
   entry: {
-    app: ['./public/js/app.js'],
+    app: ['whatwg-fetch', './public/js/app.js'],
   },
   output: {
     path: path.resolve(__dirname, 'public', 'dist'),
