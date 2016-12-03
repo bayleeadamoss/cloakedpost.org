@@ -105,6 +105,7 @@ app.get('/istor', (req, res) => {
       isTor,
       force,
       ip,
+      req.headers,
     })
   })
 })
