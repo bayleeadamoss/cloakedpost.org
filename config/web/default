@@ -1,4 +1,4 @@
-# FILE of /etc/nginx/sites-available/default
+# /etc/nginx/sites-available/default
 # Default server configuration
 server {
         client_max_body_size 128000; # 128kb
