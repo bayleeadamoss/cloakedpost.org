@@ -103,9 +103,6 @@ app.get('/istor', (req, res) => {
   TorTest.isTor(ip, force, (err, isTor) => {
     res.json({
       isTor,
-      force,
-      ip,
-      req,
     })
   })
 })
