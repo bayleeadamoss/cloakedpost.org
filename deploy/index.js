@@ -10,6 +10,18 @@ const deployHost = require('./tasks/deployHost')
 const createSnapshot = require('./tasks/createSnapshot')
 const decomissionHost = require('./tasks/decomissionHost')
 
+const deleteOldestSnapshot = () => {
+  return Promise.resolve()
+}
+
+const addToLoadBalancer = (host) => {
+  return Promise.resolve()
+}
+
+const removeToLoadBalancer = (host) => {
+  return Promise.resolve()
+}
+
 Promise.all([getHostCount(), getLatestSnapshot(), buildAssets()]).then(([hostCount, lastSnapshot]) => {
   console.log('Creating hosts')
   return createHosts(hostCount, lastSnapshot)
@@ -17,7 +29,9 @@ Promise.all([getHostCount(), getLatestSnapshot(), buildAssets()]).then(([hostCou
   console.log('Deploying to hosts')
   return Promise.all(newHostList.map((newHost) => {
     console.log('Deploying to host', newHost)
-    return deployHost(newHost)
+    return deployHost(newHost).then(() => {
+      return addToLoadBalancer(newHost)
+    })
   }))
 }).then(([firstHost]) => {
   console.log('Creating a new snapshot')
@@ -27,10 +41,15 @@ Promise.all([getHostCount(), getLatestSnapshot(), buildAssets()]).then(([hostCou
   return getOldHosts()
 }).then((hostList) => {
   console.log('Decomissioning hosts')
-  return Promise.all(hostList.map((host) => {
-    console.log('Decomissioning', host)
-    return decomissionHost(host)
+  return Promise.all(hostList.map((oldHost) => {
+    console.log('Decomissioning', oldHost)
+    return removeFromLoadBalancer(oldHost).then(() => {
+      return decomissionHost(oldHost)
+    })
   }))
+}).then(([firstHost]) => {
+  console.log('Deleting oldest snapshot')
+  return deleteOldestSnapshot(firstHost)
 }).then(() => {
   console.log('Deployment complete')
 }).catch((err) => {
