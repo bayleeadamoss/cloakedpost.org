@@ -1,8 +1,0 @@
-# /etc/nginx/sites-available/default
-# http to https redirect
-server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-        server_name cloakedpost.org;
-        return 301 https://$server_name$request_uri;
-}
