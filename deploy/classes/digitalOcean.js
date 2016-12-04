@@ -1,7 +1,7 @@
 const moment = require('moment')
 const https = require('https')
-const generateId = require('../../lib/generateId')
 const doUntil = require('../lib/doUntil')
+const generateNames = require('../lib/generateNames')
 
 const CURRENT_TAG = 'CLOAKEDPOST-' + moment().format('YYYY-M-DD-H-mm-ss')
 const DIGITALOCEAN_TOKEN = process.env.DIGITALOCEAN_TOKEN || 'no-digitalocean-token'
@@ -56,29 +56,40 @@ class DigitalOcean {
     })
   }
 
+  getNewServers () {
+    return fetch('GET', `/v2/droplets?resource_type=droplet&tag_name=${CURRENT_TAG}`).then((data) => {
+      return data.droplets
+    })
+  }
+
+  serversAreUp () {
+    this.getNewServers().then((droplets) => {
+      return droplets.map((droplet) => {
+        return response.droplet.status === 'active'
+      })
+    }).then((promises) => {
+      return Promise.all(promises).then((responses) => {
+        return !responses.include(false)
+      })
+    })
+  }
+
   createAppServers (hostCount) {
-    const names = (function () {
-      const result = [];
-      for (var i=0; i<hostCount; i++) {
-        result.push(`cloadedpost-app-${generateId(7)}`)
-      }
-      return result
-    })()
     return this.getAppSnapshots().then(([snapshot]) => {
       return fetch('POST', '/v2/droplets', {
         image: snapshot.id,
-        names: names,
+        names: generateNames(hostCount),
         region: 'nyc3',
         size: '512mb',
-        tags: ['cloakedpost', 'app'],
+        tags: ['cloakedpost', 'app', CURRENT_TAG],
         backups: false,
         ipv6: false,
         private_networking: true,
       })
     }).then(() => {
       return doUntil(() => {
-        // check if all hosts are active
-      })
+        return this.serversAreUp()
+      }, 5000)
     })
   }
 }
