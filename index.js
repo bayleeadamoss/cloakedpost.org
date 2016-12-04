@@ -11,6 +11,7 @@ const CLOAK_SALT = process.env.CLOAK_SALT || 'EtC9szrmx4HDAZg35aW2x4RtwqW3eL7H03
 const TorTest = require('tor-test')
 const os = require('os')
 const { exec } = require('child_process')
+const generateId = require('./lib/generateId')
 
 function validateId (id) {
   if (id.match(/^[a-z0-9]+$/)) {
@@ -36,17 +37,6 @@ function cleanContent (content) {
 
 function hashPasskey (passkey = '') {
   return hash.sha512().update(CLOAK_SALT + passkey).digest('hex')
-}
-
-function generateId (length = 15) {
-  const chars = []
-  const possible = 'abcdefghijklmnopqrstuvwxyz0123456789'
-  const possibleLen = possible.length
-  for (let i = 0; i < length; i++) {
-    chars.push(possible.charAt(Math.floor(Math.random() * possibleLen)))
-  }
-
-  return chars.join('');
 }
 
 app.use(express.static('public'))

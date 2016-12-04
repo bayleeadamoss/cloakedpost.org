@@ -1,10 +1,9 @@
-const getHosts = require('./getHosts')
+const DigitalOcean = require('../classes/digitalOcean')
+const getLatestSnapshot
 
 const getHostCount = () => {
-  return getHosts().then((hosts) => {
-    return hosts.filter((host) => {
-      // do the things
-    })
+  return DigitalOcean.getAppServers().then((servers) => {
+    return servers.length
   })
 }
 
