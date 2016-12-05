@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/blainesch/gpg-blog.git"
+    "url": "git+ssh://git@github.com/tinytacoteam/cloakedpost.org.git"
   },
   "author": "",
   "license": "Unlicense",
   "bugs": {
-    "url": "https://github.com/blainesch/gpg-blog/issues"
+    "url": "https://github.com/tinytacoteam/cloakedpost.org/issues"
   },
-  "homepage": "https://github.com/blainesch/gpg-blog#readme",
+  "homepage": "https://github.com/tinytacoteam/cloakedpost.org#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
