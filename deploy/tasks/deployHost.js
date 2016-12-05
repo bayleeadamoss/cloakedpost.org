@@ -1,5 +1,8 @@
 const Client = require('ssh2').Client;
 const fs = require('fs')
+const os = require('os')
+const path = require('path')
+
 // git pull on server
 // Rsync to modules
 // Start pm2
@@ -26,7 +29,7 @@ function getConnection (ip) {
       host: ip,
       port: 22,
       username: 'cloakedpost',
-      privateKey: fs.readFileSync('/Users/blainesch/.ssh/id_rsa')
+      privateKey: fs.readFileSync(path.join(os.homedir(), '.ssh', 'id_rsa'))
     })
   })
 }
