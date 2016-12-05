@@ -1,6 +1,6 @@
 function doUntil (fn, timeout = 250) {
   return Promise.resolve().then(() => {
-    fn().then((response) => {
+    return fn().then((response) => {
       if (response) {
         return true
       } else {

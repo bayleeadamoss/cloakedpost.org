@@ -1,13 +1,9 @@
 const DigitalOcean = require('../classes/digitalOcean')
 
 const createHosts = (hostCount) => {
-  DigitalOcean.createAppServers(hostCount).then((data) => {
-    console.log('data', data)
-  }).catch((err) => {
-    console.log('err', err)
+  return DigitalOcean.createAppServers(hostCount).then(() => {
+    return DigitalOcean.getNewServers()
   })
 }
-
-createHosts(3)
 
 module.exports = createHosts

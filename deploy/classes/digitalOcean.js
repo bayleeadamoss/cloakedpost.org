@@ -3,7 +3,8 @@ const https = require('https')
 const doUntil = require('../lib/doUntil')
 const generateNames = require('../lib/generateNames')
 
-const CURRENT_TAG = 'CLOAKEDPOST-' + moment().format('YYYY-M-DD-H-mm-ss')
+// const CURRENT_TAG = 'CLOAKEDPOST-' + moment().format('YYYY-M-DD-H-mm-ss')
+const CURRENT_TAG = 'CLOAKEDPOST-meow'
 const DIGITALOCEAN_TOKEN = process.env.DIGITALOCEAN_TOKEN || 'no-digitalocean-token'
 
 const fetch = (method, path, data = {}) => {
@@ -23,8 +24,6 @@ const fetch = (method, path, data = {}) => {
       },
     }
     const req = https.request(options, (res) => {
-      console.log(`STATUS: ${res.statusCode}`);
-      console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
       const response = []
       res.on('data', (d) => response.push(d.toString()))
       res.on('end', () => resolve(response.join('')))
@@ -62,20 +61,15 @@ class DigitalOcean {
     })
   }
 
-  serversAreUp () {
-    this.getNewServers().then((droplets) => {
-      return droplets.map((droplet) => {
-        return response.droplet.status === 'active'
-      })
-    }).then((promises) => {
-      return Promise.all(promises).then((responses) => {
-        return !responses.include(false)
-      })
+  serversAreUp (hostCount) {
+    return this.getNewServers().then((droplets) => {
+      return droplets.length === hostCount
     })
   }
 
   createAppServers (hostCount) {
     return this.getAppSnapshots().then(([snapshot]) => {
+      const names = generateNames(hostCount)
       return fetch('POST', '/v2/droplets', {
         image: snapshot.id,
         names: generateNames(hostCount),
@@ -88,8 +82,8 @@ class DigitalOcean {
       })
     }).then(() => {
       return doUntil(() => {
-        return this.serversAreUp()
-      }, 5000)
+        return this.serversAreUp(hostCount)
+      }, 10000)
     })
   }
 }
