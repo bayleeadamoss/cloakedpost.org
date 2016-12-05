@@ -48,6 +48,10 @@ class DigitalOcean {
   }
 
   getAppServers () {
+    return Promise.resolve([
+      { networks: { v4: { ip_address: '138.197.21.140', } } },
+      { networks: { v4: { ip_address: '104.236.209.164', } } },
+    ])
     return fetch('GET', '/v2/droplets?resource_type=droplet&tag_name=app').then((data) => {
       return data.droplets.filter((droplet) => {
         return droplet.tags.indexOf('cloakedpost') !== -1
@@ -55,7 +59,17 @@ class DigitalOcean {
     })
   }
 
+  getLoadBalancers () {
+    return fetch('GET', '/v2/droplets?resource_type=droplet&tag_name=load-balancer').then((data) => {
+      return data.droplets
+    })
+  }
+
   getNewServers () {
+    return Promise.resolve([
+      { networks: { v4: { ip_address: '138.197.34.48', } } },
+      { networks: { v4: { ip_address: '45.55.205.22', } } },
+    ])
     return fetch('GET', `/v2/droplets?resource_type=droplet&tag_name=${CURRENT_TAG}`).then((data) => {
       return data.droplets
     })
@@ -69,6 +83,7 @@ class DigitalOcean {
 
   createAppServers (hostCount) {
     return this.getAppSnapshots().then(([snapshot]) => {
+      return // fake create them [:
       const names = generateNames(hostCount)
       return fetch('POST', '/v2/droplets', {
         image: snapshot.id,
@@ -82,6 +97,7 @@ class DigitalOcean {
       })
     }).then(() => {
       return doUntil(() => {
+        console.log('do until...')
         return this.serversAreUp(hostCount)
       }, 10000)
     })

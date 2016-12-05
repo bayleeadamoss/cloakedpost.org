@@ -10,14 +10,15 @@ const destroyHost = require('./tasks/destroyHost')
 Promise.all([getHostCount(), buildAssets()]).then(([hostCount]) => {
   console.log('Creating hosts')
   return createHosts(hostCount)
-}).then((newHostList) => {
+}).then((droplets) => {
   console.log('Deploying to hosts')
-  return Promise.all(newHostList.map((newHost) => {
-    console.log('Deploying to host', newHost)
-    return deployHost(newHost).then(() => {
-      return addToLoadBalancer(newHost)
-    })
-  }))
+  return Promise.all(droplets.map((droplet) => {
+    console.log('Deploying to host', droplet.name)
+    return deployHost(droplet)
+  })).then(() => {
+    console.log('Adding to load balancer')
+    return addToLoadBalancer(droplets)
+  })
 }).then(() => {
   console.log('Getting old host list')
   return getOldHosts()

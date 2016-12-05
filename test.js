@@ -1,7 +1,7 @@
 var Handlebars = require('handlebars')
 var fs = require('fs')
 
-var source = fs.readFileSync('./config/load-balancer/nginx.conf.handlebars').toString()
+var source = fs.readFileSync('./config/lb.nginx.conf').toString()
 
 var template = Handlebars.compile(source)
 
